@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/MatkakorttiMockito.iml" filepath="$PROJECT_DIR$/MatkakorttiMockito.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MatkakorttiMockito_main.iml" filepath="$PROJECT_DIR$/.idea/modules/MatkakorttiMockito_main.iml" group="MatkakorttiMockito" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MatkakorttiMockito_test.iml" filepath="$PROJECT_DIR$/.idea/modules/MatkakorttiMockito_test.iml" group="MatkakorttiMockito" />
+    </modules>
+  </component>
+</project>
