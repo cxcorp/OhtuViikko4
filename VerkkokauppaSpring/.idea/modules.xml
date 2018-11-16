@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/VerkkokauppaSpring.iml" filepath="$PROJECT_DIR$/VerkkokauppaSpring.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/VerkkokauppaSpring_main.iml" filepath="$PROJECT_DIR$/.idea/modules/VerkkokauppaSpring_main.iml" group="VerkkokauppaSpring" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/VerkkokauppaSpring_test.iml" filepath="$PROJECT_DIR$/.idea/modules/VerkkokauppaSpring_test.iml" group="VerkkokauppaSpring" />
+    </modules>
+  </component>
+</project>
