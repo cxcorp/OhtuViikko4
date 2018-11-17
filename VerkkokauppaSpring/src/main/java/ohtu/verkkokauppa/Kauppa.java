@@ -21,7 +21,11 @@ public class Kauppa {
     }
 
     public void poistaKorista(int id) {
+        if (!loytyyKorista(id)) {
+            return;
+        }
         Tuote t = varasto.haeTuote(id);
+        ostoskori.poista(t);
         varasto.palautaVarastoon(t);
     }
 
@@ -38,6 +42,12 @@ public class Kauppa {
         int summa = ostoskori.hinta();
 
         return pankki.tilisiirto(nimi, viite, tiliNumero, kaupanTili, summa);
+    }
+
+    private boolean loytyyKorista(int tuoteId) {
+        return ostoskori.tuotteet
+            .stream()
+            .anyMatch(koriTuote -> koriTuote.getId() == tuoteId);
     }
 
 }

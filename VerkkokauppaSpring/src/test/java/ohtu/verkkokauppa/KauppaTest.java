@@ -3,9 +3,9 @@ package ohtu.verkkokauppa;
 import org.junit.Test;
 import static org.mockito.Mockito.*;
 
-public class PankkiTest {
+public class KauppaTest {
 
-    // this test is copypasta from the materials
+    // begin direct copypasta from the materials
     @Test
     public void ostoksenPaaytyttyaPankinMetodiaTilisiirtoKutsutaan() {
         // luodaan ensin mock-oliot
@@ -32,6 +32,7 @@ public class PankkiTest {
         verify(pankki).tilisiirto(anyString(), anyInt(), anyString(), anyString(), anyInt());
         // toistaiseksi ei välitetty kutsussa käytetyistä parametreista
     }
+    // end direct copypasta from the materials
 
     @Test
     public void ostoksenPaaytyttyaPankinMetodiaTilisiirtoKutsutaanOikeiParametreilla() {
@@ -141,6 +142,111 @@ public class PankkiTest {
             eq("54321"),
             anyString(),
             eq(5)
+        );
+    }
+
+    @Test
+    public void aloitaAsiointiNollaaEdellisetOstokset() {
+        Pankki pankki = mock(Pankki.class);
+
+        Viitegeneraattori viite = mock(Viitegeneraattori.class);
+        when(viite.uusi()).thenReturn(44);
+
+        Varasto varasto = mock(Varasto.class);
+        when(varasto.saldo(1)).thenReturn(10);
+        when(varasto.haeTuote(1)).thenReturn(new Tuote(1, "maito", 5));
+
+        Kauppa k = new Kauppa(varasto, pankki, viite);
+
+        k.aloitaAsiointi();
+        k.lisaaKoriin(1);
+
+        k.aloitaAsiointi();
+        k.lisaaKoriin(1);
+        k.tilimaksu("arto", "54321");
+
+        verify(pankki).tilisiirto(
+            anyString(),
+            anyInt(),
+            anyString(),
+            anyString(),
+            eq(5)
+        );
+    }
+
+    @Test
+    public void poistaKoristaMetodillaPoistettuTuoteEiPaadyMaksettavaksi() {
+        Pankki pankki = mock(Pankki.class);
+
+        Viitegeneraattori viite = mock(Viitegeneraattori.class);
+        when(viite.uusi()).thenReturn(44);
+
+        Varasto varasto = mock(Varasto.class);
+        when(varasto.saldo(1)).thenReturn(10);
+        when(varasto.saldo(2)).thenReturn(10);
+        when(varasto.saldo(3)).thenReturn(5);
+        when(varasto.haeTuote(1)).thenReturn(new Tuote(1, "maito", 5));
+        when(varasto.haeTuote(2)).thenReturn(new Tuote(2, "kissa", 500));
+        when(varasto.haeTuote(3)).thenReturn(new Tuote(3, "kookos", 2));
+
+        Kauppa k = new Kauppa(varasto, pankki, viite);
+
+        k.aloitaAsiointi();
+        k.lisaaKoriin(1);
+        k.lisaaKoriin(2);
+        k.lisaaKoriin(3);
+        k.poistaKorista(2);
+        k.tilimaksu("arto", "54321");
+
+        verify(pankki).tilisiirto(
+            anyString(),
+            anyInt(),
+            anyString(),
+            anyString(),
+            eq(7)
+        );
+    }
+
+    @Test
+    public void poistaKoristaMetodillaPoistettuTuotePalautetaanVarastoon() {
+        Pankki pankki = mock(Pankki.class);
+
+        Viitegeneraattori viite = mock(Viitegeneraattori.class);
+
+        Varasto varasto = mock(Varasto.class);
+        Tuote testiTuote = new Tuote(1, "maito", 5);
+        when(varasto.saldo(1)).thenReturn(10);
+        when(varasto.haeTuote(1)).thenReturn(testiTuote);
+
+        Kauppa k = new Kauppa(varasto, pankki, viite);
+
+        k.aloitaAsiointi();
+        k.lisaaKoriin(1);
+        k.poistaKorista(1);
+
+        verify(varasto, times(1)).palautaVarastoon(
+            eq(testiTuote)
+        );
+    }
+
+    @Test
+    public void poistaKoristaEiPalautaVarastoonTuotettaJokaEiOleKorissa() {
+        Pankki pankki = mock(Pankki.class);
+        Viitegeneraattori viite = mock(Viitegeneraattori.class);
+
+        Varasto varasto = mock(Varasto.class);
+        Tuote testiTuote = new Tuote(1, "maito", 5);
+        when(varasto.saldo(1)).thenReturn(10);
+        when(varasto.haeTuote(1)).thenReturn(testiTuote);
+
+        Kauppa k = new Kauppa(varasto, pankki, viite);
+
+        k.aloitaAsiointi();
+        k.lisaaKoriin(2);
+        k.poistaKorista(1);
+
+        verify(varasto, times(0)).palautaVarastoon(
+            any()
         );
     }
 }
